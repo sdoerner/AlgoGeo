@@ -1,0 +1,69 @@
+\documentclass{article}
+\usepackage{listings} \lstset{numbers=left, numbersep=5pt}
+%\lstset{language=Perl} 
+
+\oddsidemargin0mm
+\evensidemargin0mm
+\topmargin-20mm
+\textwidth160mm
+\textheight240mm
+\parindent0pt
+
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\K}{\mathbb{K}}
+\usepackage[ngerman]{babel}   % provide non-american language - new german
+\usepackage[ansinew]{inputenc} % nur fuer schoene Umlaute ;)
+\usepackage{lscape}
+\usepackage{multirow}
+\usepackage{expdlist}
+%\usepackage{bigstrut} % \bigstrut in Tabellenzeilen, deren hochgestellte Eintraege von der \hline drueber durchgestrichen werden
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{stmaryrd}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{listings}
+\newcommand{\serie}{6}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Sebastian D\"orner (180766)} %Kopfzeile links
+\fancyhead[C]{Algorithmische Geometrie} %zentrierte Kopfzeile
+\fancyhead[R]{Mittwoch} %Kopfzeile rechts
+\renewcommand{\headrulewidth}{0.0pt} %obere Trennlinie
+\fancyfoot[C]{\thepage} %Seitennummer
+
+\begin{document}
+\begin{large}
+\textbf{L"osung \"Ubung \serie}\\ \\
+\end{large}
+\textbf{Aufgabe 2}\\
+Ich nehme an, dass die Eckpunkte der Polygone bereits sortiert vorliegen. Ansonsten k\"onnten wir mit $n_2=0$ n\"amlich in $O(n_1)$ sortieren (vgl. Aufgabe 2.1).
+Pseudocode unter Vernachl\"assung der Betrachtung von Randf\"allen:
+
+\begin{minipage}{.6\textwidth}
+\texttt{01 $p\ \leftarrow$ findMinimum($P_1$)\\
+02 $q\ \leftarrow$ findMinimum($P_2$)\\
+03 $p_{1}\ \leftarrow$ $p$\\
+04 $p_{2}\ \leftarrow$ $p$\\
+05 $q_{1}\ \leftarrow$ $q$\\
+06 $q_{2}\ \leftarrow$ $q$\\
+07 searchSet $\leftarrow \{p_1,p_2,q_1,q_2\}$\\
+08 {\bf while} (searchSet $\neq \emptyset$)\\
+09 $\quad$ min = minimum(searchSet)\\
+10 $\quad$ report min\\
+//setze entsprechenden Zeiger aus searchSet weiter\\
+11 $\quad$ min.increaseOriginalPointer()\\
+12 $\quad$ {\bf if} ($p_1.prev() = p_2$)\\
+13 $\quad\quad$ searchSet $\leftarrow$ searchSet$\setminus \{p_1,p_2\}$\\
+14 $\quad$ {\bf if} ($q_1.prev() = q_2$)\\
+15 $\quad\quad$ searchSet $\leftarrow$ searchSet$\setminus \{q_1,q_2\}$
+}
+\end{minipage}
+\begin{minipage}{.4\textwidth}
+Mittels der Zeiger $p_1,p_2,q_1,q_2$ bewegen wir uns um die Polygone. Dabei nutzen wir die Methode increaseOriginalPointer(), um Zeiger mit Index 1 zu erh\"ohen und Zeiger mit Index 2 zu verringern. Wegen der Konvexit\"at muss das n\"achste Minimum jeweils unter diesen 4 Punkten sein. Alle einzelnen Anweisungen au\ss er Zeile 07 haben Laufzeit $O(1)$. Die while-Schleife wird $O(n_1 + n_2)$ mal ausgef\"uhrt, da sich die Zeiger $p_1$ und $p_2$ dann treffen, wenn wir ein mal das gesamte Polygon P umlaufen haben. Analoges gilt f\"ur $q_1$ und $q_2$.
+\end{minipage}
+\end{document}
