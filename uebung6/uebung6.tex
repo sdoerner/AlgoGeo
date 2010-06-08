@@ -40,6 +40,11 @@
 \begin{large}
 \textbf{L"osung \"Ubung \serie}\\ \\
 \end{large}
+\textbf{Aufgabe 1}\\
+Interessant sind nur die beiden while-Schleifen, da alle anderen Anweisungen in konstanter Zeit auszuf\"uhren sind. Die erste Schleife (Zeile 04) wird, wie an der Enwicklung von $j$ leicht abzulesen ist, $O(n)$ mal ausgef\"uhrt.\\
+Der Test der zweiten while-Schleife liegt innerhalb der ersten und wird daher mindestens 1 mal pro "au\ss erem Schleifendurchlauf ausgef\"uhrt ($O(n)$). Dar\"uberhinaus wird der Test und Rumpf genau so oft ausgef\"uhrt wie die Bedingung zu wahr evaluiert. Wie oft kann dies auftreten?\\
+Sp\"atestens bei ($q_n$, $q_1$, $q_{j+1}$) tritt ein Linksknick auf. Auf den Stack wird jedes Element au\ss er $q_n$ genau 1 mal gepusht. Somit k\"onnen insgesamt auch nur maximal $O(n)$ Element vom Stack entfernt werden. Da in jedem Durchlauf des Rumpfes der inneren while-Schleife ein Element vom Stack entfernt wird, kann sie \textit{insgesamt} nur n mal durchlaufen werden. Somit ist der Aufwand f\"ur den Algorithmus in $O(n)$.\\
+
 \textbf{Aufgabe 2}\\
 Ich nehme an, dass die Eckpunkte der Polygone bereits sortiert vorliegen. Ansonsten k\"onnten wir mit $n_2=0$ n\"amlich in $O(n_1)$ sortieren (vgl. Aufgabe 2.1).
 Pseudocode unter Vernachl\"assung der Betrachtung von Randf\"allen:
@@ -65,5 +70,26 @@ Pseudocode unter Vernachl\"assung der Betrachtung von Randf\"allen:
 \end{minipage}
 \begin{minipage}{.4\textwidth}
 Mittels der Zeiger $p_1,p_2,q_1,q_2$ bewegen wir uns um die Polygone. Dabei nutzen wir die Methode increaseOriginalPointer(), um Zeiger mit Index 1 zu erh\"ohen und Zeiger mit Index 2 zu verringern. Wegen der Konvexit\"at muss das n\"achste Minimum jeweils unter diesen 4 Punkten sein. Alle einzelnen Anweisungen au\ss er Zeile 07 haben Laufzeit $O(1)$. Die while-Schleife wird $O(n_1 + n_2)$ mal ausgef\"uhrt, da sich die Zeiger $p_1$ und $p_2$ dann treffen, wenn wir ein mal das gesamte Polygon P umlaufen haben. Analoges gilt f\"ur $q_1$ und $q_2$.
-\end{minipage}
+\end{minipage}\\
+
+\textbf{Aufgabe 4}\\
+Wir nutzen einen Plane-Sweep-Algorithmus. Die x-Struktur f\"ullen wir mit den x-Werten, an denen Rechtecke beginnen und enden. Die y-Struktur enth\"alt Knoten der Form (y-Koordinate, Rechteck-ID)in einem balancierten Suchbaum, dessen Daten sich nur in den Bl\"attern befinden, welche zus\"atzlich verkettet sind. Wenn wir auf ein neues Rechteck treffen, werden dessen obere und untere y-Koordinate in den Suchbaum engef\"ugt. Danach pr\"ufen wir, ob der Nachfolger der oberen Begrenzungsstrecke in dem Suchbaum gerade die untere Begrenzungsstrecke des selben Rechtecks ist. Wenn dies der Fall ist, so gehen wir zum n\"achsten Event, ansonsten haben wir einen Schnitt von Rechtecken gefunden. Treffen wir auf das Ende eines Rechtecks, so werden die korrespondierenden y-Koordinaten einfach aus dem Suchbaum gel\"oscht.\\
+\textit{Korrektheit:} Es ist sicherzustellen, dass wir alle sich schneidenden Rechtecke an gewissen Ereignissen erkennen. Der Schnitt zweier Rechtecke wird festgestellt beim Einf\"ugen des Rechtecks, dessen linke Seite die gr\"o\ss ere x-Koordinate hat. Dort treten f\"ur das andere Rechteck folgenden F\"alle ein:
+\begin{itemize}
+\item Es befindet sich komplett links von der Sweep-Linie. Dann gibt es auch keinen Schnitt der Rechtecke
+\item Die linke Seite befindet sich links, die rechte Seite rechts von der Sweep-Linie. Sofern sich die Rechtecke schneiden, liegt ein Schnittpunkt genau an dieser x-Koordinate.
+\item Das Rechteck liegt komplett rechts von der Sweep-Linie. Dann ist die linke Seite des aktuell eingef\"ugten Rechtecks links von der des anderen, entgegen unserer Voraussetzung.
+\end{itemize}
+In allen F\"allen erkennen wir den Schnitt, sofern er vorliegt.\\
+\textit{Laufzeit:} Das Sortieren f\"ur den Plane-Sweep dauert $O(n)$. Der Sweep selbst hat $2n = O(n)$ Ereignisse. Bei jedem Ereignis greifen wir auf den Baum zu ($O(\log n)$). Somit haben wir insgesamt $O(n\log n)$.
+
+\textbf{Aufgabe 5}\\
+In der x-Struktur befinden sich alle Eckpunkte von Dreiecken bzw. die Koordinaten der roten Punkte, sortiert nach x-Koordinate. In der y-Struktur (balancierter Suchbaum) verwalten wir Strecken von Dreiecken, die aktuell von der Sweep-Linie geschnitten werden. Da sich die Dreiecke nicht schneiden, muss die Reihenfolge von Strecken in der y-Struktur nicht ge\"andert werden. Wir haben folgende Ereignisse:
+\begin{itemize}
+\item erster getroffener Punkt eines Dreiecks: Lokalisiere die y-Koordinate des Punktes in der y-Struktur und f\"uge dort die beiden abgehenden Strecken nach ihrem Anstieg geordnet ein.
+\item zweiter getroffener Punktes eines Dreiecks: Lokalisiere die endende Strecke des Dreiecks in der y-Struktur und ersetze sie durch die beginnende. Da beide Strecken an dieser x-Koordinate den selben Punkt teilen, ist die Position in der y-Struktur genau die gleiche.
+\item letzter getroffener Punkt eines Dreiecks: Entferne die beiden endenden Strecken aus der y-Struktur.
+\item roter Punkt: Lokalisiere den Punkt in der y-Struktur und bestimme den potentiellen Vorg\"anger und Nachfolger. Wenn beide zum selben Dreieck geh\"oren, so liegt der Punkt im Dreieck, sonst nicht.
+\end{itemize}
+\textit{Laufzeit:} Die Sortierung dauert $O(n\log n)$, wir verarbeiten $O(n)$ Ereignisse, deren Behandlung jeweils $O(\log n)$ Zeit braucht (Baum-Zugriff). Insgesamt ben\"otigt der Algorithmus also eine Laufzeit in  $O(n\log n)$.
 \end{document}
